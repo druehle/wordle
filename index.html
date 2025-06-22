@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wordle Game</title>
     <style>
+
         * {
             margin: 0;
             padding: 0;
@@ -19,6 +20,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            /* Add safe area padding for notched devices */
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
 
         .header {
@@ -64,6 +67,13 @@
             font-weight: bold;
             text-transform: uppercase;
             transition: all 0.3s ease;
+            /* Add focus styles for accessibility */
+            outline: none;
+        }
+
+        .letter-box:focus {
+            border-color: #ffffff;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
         }
 
         .letter-box.filled {
@@ -103,6 +113,8 @@
             flex-direction: column;
             gap: 8px;
             margin-bottom: 20px;
+            /* Add padding for better touch targets */
+            padding: 0 10px;
         }
 
         .keyboard-row {
@@ -126,10 +138,26 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            /* Critical mobile improvements */
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
         }
 
         .key:hover {
             background: #565758;
+        }
+
+        /* Add active state for better mobile feedback */
+        .key:active {
+            background: #4a4a4c;
+            transform: scale(0.95);
+        }
+
+        /* Add focus state for keyboard navigation */
+        .key:focus {
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
         }
 
         .key.wide {
@@ -167,6 +195,9 @@
             z-index: 1000;
             opacity: 0;
             transition: opacity 0.15s ease;
+            /* Ensure message is readable on mobile */
+            max-width: 90vw;
+            text-align: center;
         }
 
         .message.show {
@@ -186,29 +217,23 @@
             cursor: pointer;
             transition: all 0.1s ease;
             margin-top: 20px;
+            /* Mobile improvements */
+            touch-action: manipulation;
+            min-height: 44px;
+            outline: none;
         }
 
         .new-game-btn:hover {
             background: #565758;
         }
 
-        @media (max-width: 600px) {
-            .letter-box {
-                width: 50px;
-                height: 50px;
-                font-size: 1.5rem;
-            }
-            
-            .key {
-                padding: 10px 8px;
-                font-size: 0.8rem;
-                min-width: 35px;
-                height: 48px;
-            }
-            
-            .key.wide {
-                min-width: 55px;
-            }
+        .new-game-btn:active {
+            background: #4a4a4c;
+            transform: scale(0.98);
+        }
+
+        .new-game-btn:focus {
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
         }
 
         .confirmation-modal {
@@ -225,6 +250,9 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
+            padding: 20px;
+            /* Ensure modal works on mobile */
+            padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
         }
 
         .confirmation-modal.show {
@@ -236,9 +264,13 @@
             background: #ffffff;
             border-radius: 8px;
             padding: 30px;
+            width: 100%;
             max-width: 400px;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            /* Ensure it doesn't overflow on small screens */
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .confirmation-box h3 {
@@ -251,23 +283,29 @@
             margin-bottom: 25px;
             color: #565758;
             line-height: 1.4;
+            font-size: 1rem;
         }
 
         .confirmation-buttons {
             display: flex;
             gap: 15px;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         .confirm-btn, .cancel-btn {
-            padding: 10px 20px;
+            padding: 14px 24px;
             border: none;
             border-radius: 4px;
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.2s ease;
-            min-width: 80px;
+            min-width: 100px;
+            /* Critical for mobile */
+            touch-action: manipulation;
+            min-height: 44px;
+            outline: none;
         }
 
         .confirm-btn {
@@ -279,6 +317,15 @@
             background: #5a9a54;
         }
 
+        .confirm-btn:active {
+            background: #4a9a44;
+            transform: scale(0.98);
+        }
+
+        .confirm-btn:focus {
+            box-shadow: 0 0 0 2px rgba(106, 170, 100, 0.5);
+        }
+
         .cancel-btn {
             background: #d3d6da;
             color: #1a1a1b;
@@ -287,6 +334,133 @@
         .cancel-btn:hover {
             background: #bbbec2;
         }
+
+        .cancel-btn:active {
+            background: #a8abc2;
+            transform: scale(0.98);
+        }
+
+        .cancel-btn:focus {
+            box-shadow: 0 0 0 2px rgba(211, 214, 218, 0.7);
+        }
+
+        /* Mobile responsive breakpoints */
+        @media (max-width: 600px) {
+            .letter-box {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            .key {
+                padding: 12px 10px;
+                font-size: 0.8rem;
+                min-width: 38px;
+                height: 50px;
+                /* Ensure minimum touch target size */
+                min-height: 44px;
+            }
+            
+            .key.wide {
+                min-width: 60px;
+                padding: 12px 16px;
+            }
+            
+            .game-info {
+                font-size: 1rem;
+                gap: 15px;
+            }
+            
+            .header {
+                margin: 15px 0;
+            }
+            
+            .game-board {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .keyboard {
+                gap: 6px;
+                padding: 0 15px;
+            }
+            
+            .keyboard-row {
+                gap: 4px;
+            }
+        }
+
+        /* Very small screens */
+        @media (max-width: 360px) {
+            .letter-box {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+            
+            .key {
+                min-width: 32px;
+                height: 48px;
+                padding: 10px 8px;
+                font-size: 0.75rem;
+            }
+            
+            .key.wide {
+                min-width: 52px;
+                padding: 10px 12px;
+            }
+            
+            .game-board {
+                padding: 10px;
+            }
+            
+            .keyboard {
+                padding: 0 10px;
+            }
+            
+            .keyboard-row {
+                gap: 3px;
+            }
+            
+            .confirmation-box {
+                padding: 20px;
+                margin: 10px;
+            }
+        }
+
+        /* Landscape orientation adjustments */
+        @media (orientation: landscape) and (max-height: 500px) {
+            .header {
+                margin: 10px 0;
+            }
+            
+            .game-board {
+                margin-bottom: 15px;
+                padding: 10px;
+            }
+            
+            .keyboard {
+                margin-bottom: 10px;
+            }
+            
+            .letter-box {
+                width: 45px;
+                height: 45px;
+                font-size: 1.4rem;
+            }
+            
+            .key {
+                height: 45px;
+                min-height: 40px;
+                padding: 10px 8px;
+            }
+            
+            .new-game-btn {
+                margin-top: 10px;
+                padding: 10px 20px;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -321,7 +495,6 @@
     <div class="message" id="message"></div>
 
     <script>
-        // Word list - shortened for demo, you can expand this
         const WORDS = [
             'ABOUT', 'ABOVE', 'ABUSE', 'ACTOR', 'ACUTE', 'ADMIT', 'ADOPT', 'ADULT', 'AFTER', 'AGAIN',
             'AGENT', 'AGREE', 'AHEAD', 'ALARM', 'ALBUM', 'ALERT', 'ALIEN', 'ALIGN', 'ALIKE', 'ALIVE',
@@ -374,7 +547,105 @@
             'UNDUE', 'UNION', 'UNITY', 'UNTIL', 'UPPER', 'UPSET', 'URBAN', 'USAGE', 'USUAL', 'VALUE',
             'VIDEO', 'VIRUS', 'VISIT', 'VITAL', 'VOCAL', 'VOICE', 'WASTE', 'WATCH', 'WATER', 'WHEEL',
             'WHERE', 'WHICH', 'WHILE', 'WHITE', 'WHOLE', 'WHOSE', 'WOMAN', 'WOMEN', 'WORLD', 'WORRY',
-            'WORSE', 'WORST', 'WORTH', 'WOULD', 'WRITE', 'WRONG', 'WROTE', 'YOUNG', 'YOUTH'
+            'WORSE', 'WORST', 'WORTH', 'WOULD', 'WRITE', 'WRONG', 'WROTE', 'YOUNG', 'YOUTH', 'ABUSE',
+            'ACRES', 'ACTED', 'ACTED', 'ADDED', 'AFTER', 'AIMED', 'AIRED', 'ALERT', 'ALIAS', 'ALONE',
+            'ANGEL', 'ANGLE', 'ANKLE', 'APPLE', 'ARENA', 'ARGUE', 'ARMED', 'ARROW', 'ASKED', 'ASSET',
+            'ATLAS', 'ATOMS', 'AUDIO', 'AUDIT', 'AVOID', 'AWAKE', 'BADGE', 'BADLY', 'BANDS', 'BASIC',
+            'BATCH', 'BEACH', 'BEANS', 'BEARS', 'BEAST', 'BEGUN', 'BEING', 'BENCH', 'BIKES', 'BILLS',
+            'BIRDS', 'BIRTH', 'BLACK', 'BLADE', 'BLAME', 'BLANK', 'BLAST', 'BLIND', 'BLOCK', 'BLOOM',
+            'BLOWN', 'BLUES', 'BLUNT', 'BOARD', 'BOAST', 'BOATS', 'BONES', 'BONUS', 'BOOST', 'BOOTH',
+            'BOOTS', 'BOUND', 'BOXES', 'BRAKE', 'BRAND', 'BRASS', 'BRAVE', 'BREAD', 'BREAK', 'BREED',
+            'BRICK', 'BRIDE', 'BRIEF', 'BRING', 'BROAD', 'BROKE', 'BROWN', 'BRUSH', 'BUILD', 'BUILT',
+            'BUNCH', 'BURNS', 'BURST', 'BUSES', 'BUYER', 'CABLE', 'CAKES', 'CALLS', 'CAMEL', 'CAMPS',
+            'CANAL', 'CANDY', 'CARDS', 'CARGO', 'CARRY', 'CASES', 'CATCH', 'CAUSE', 'CAVES', 'CELLS',
+            'CHAIN', 'CHAIR', 'CHAOS', 'CHARM', 'CHART', 'CHASE', 'CHEAP', 'CHECK', 'CHESS', 'CHEST',
+            'CHIEF', 'CHILD', 'CHINA', 'CHIPS', 'CHOSE', 'CHUNK', 'CIVIC', 'CIVIL', 'CLAIM', 'CLASS',
+            'CLEAN', 'CLEAR', 'CLICK', 'CLIMB', 'CLOCK', 'CLOSE', 'CLOTH', 'CLOUD', 'CLUBS', 'CLUES',
+            'COACH', 'COAST', 'COATS', 'CODES', 'COINS', 'COLOR', 'COMES', 'COMIC', 'COUCH', 'COULD',
+            'COUNT', 'COURT', 'COVER', 'CRACK', 'CRAFT', 'CRANE', 'CRASH', 'CRAZY', 'CREAM', 'CREEK',
+            'CRIME', 'CRISP', 'CROPS', 'CROSS', 'CROWD', 'CROWN', 'CRUDE', 'CRUEL', 'CRUSH', 'CURVE',
+            'CYCLE', 'DAILY', 'DANCE', 'DATED', 'DEALS', 'DEALT', 'DEATH', 'DEBUT', 'DECAY', 'DELAY',
+            'DELTA', 'DENSE', 'DEPTH', 'DESKS', 'DIARY', 'DICED', 'DIRTY', 'DISCO', 'DITCH', 'DIVES',
+            'DIZZY', 'DOING', 'DOORS', 'DOSES', 'DOUBT', 'DOZEN', 'DRAFT', 'DRAIN', 'DRAMA', 'DRANK',
+            'DRAWN', 'DREAM', 'DRESS', 'DRIED', 'DRILL', 'DRINK', 'DRIVE', 'DROPS', 'DROVE', 'DRUMS',
+            'DRUNK', 'DUCKS', 'DUMMY', 'DUSTY', 'DYING', 'EAGER', 'EARLY', 'EARTH', 'EATEN', 'EIGHT',
+            'ELBOW', 'ELDER', 'ELECT', 'ELITE', 'EMPTY', 'ENDED', 'ENEMY', 'ENJOY', 'ENTER', 'ENTRY',
+            'EQUAL', 'ERROR', 'EVENT', 'EVERY', 'EXACT', 'EXAMS', 'EXIST', 'EXITS', 'EXTRA', 'FACED',
+            'FACTS', 'FAILS', 'FAIRY', 'FAITH', 'FALLS', 'FALSE', 'FANCY', 'FARMS', 'FATAL', 'FAULT',
+            'FAVOR', 'FEARS', 'FEAST', 'FEEDS', 'FEELS', 'FENCE', 'FEWER', 'FIBER', 'FIELD', 'FIFTY',
+            'FIGHT', 'FILED', 'FILLS', 'FILMS', 'FINAL', 'FINDS', 'FINES', 'FIRED', 'FIRES', 'FIRMS',
+            'FIRST', 'FIXED', 'FLAGS', 'FLAME', 'FLASH', 'FLEET', 'FLESH', 'FLIES', 'FLOOR', 'FLOUR',
+            'FLOWS', 'FLUID', 'FOCUS', 'FOLKS', 'FONTS', 'FOODS', 'FORCE', 'FORMS', 'FORTH', 'FORTY',
+            'FORUM', 'FOUND', 'FRAME', 'FRANK', 'FRAUD', 'FRESH', 'FRIED', 'FRONT', 'FROST', 'FRUIT',
+            'FUELS', 'FULLY', 'FUNDS', 'FUNNY', 'GAMES', 'GATES', 'GEARS', 'GENES', 'GIANT', 'GIFTS',
+            'GIRLS', 'GIVEN', 'GIVES', 'GLASS', 'GLOBE', 'GLORY', 'GLOVE', 'GOALS', 'GOATS', 'GOING',
+            'GOODS', 'GRACE', 'GRADE', 'GRAIN', 'GRAND', 'GRANT', 'GRAPE', 'GRASS', 'GRAVE', 'GREAT',
+            'GREEK', 'GREEN', 'GREET', 'GRIEF', 'GRIND', 'GRIPS', 'GROSS', 'GROUP', 'GROWN', 'GROWS',
+            'GUARD', 'GUESS', 'GUEST', 'GUIDE', 'GUILD', 'GUILT', 'HABIT', 'HAIRS', 'HALLS',
+            'HANDS', 'HANGS', 'HAPPY', 'HARSH', 'HASTE', 'HATED', 'HEADS', 'HEALS', 'HEARD', 'HEART',
+            'HEAVY', 'HEELS', 'HENCE', 'HERBS', 'HIDES', 'HILLS', 'HINTS', 'HIRED', 'HOBBY', 'HOLDS',
+            'HOLES', 'HOMES', 'HONEY', 'HOOKS', 'HOPED', 'HOPES', 'HORSE', 'HOSTS', 'HOTEL', 'HOURS',
+            'HOUSE', 'HUMAN', 'HURRY', 'HURTS', 'HYPER', 'ICONS', 'IDEAL', 'IDEAS', 'IDIOT', 'IMAGE',
+            'IMPLY', 'INDEX', 'INDIA', 'INNER', 'INPUT', 'ISSUE', 'ITEMS', 'JEANS', 'JOINS', 'JOKES',
+            'JUDGE', 'JUICE', 'JUMPS', 'KEEPS', 'KILLS', 'KINDS', 'KINGS', 'KITTY', 'KNEES', 'KNIFE',
+            'KNOCK', 'KNOWN', 'KNOWS', 'LABEL', 'LACKS', 'LAKES', 'LAMPS', 'LANDS', 'LANES', 'LARGE',
+            'LASER', 'LASTS', 'LATER', 'LATEX', 'LAUGH', 'LAYER', 'LEADS', 'LEARN', 'LEASE', 'LEAST',
+            'LEAVE', 'LEGAL', 'LEMON', 'LEVEL', 'LEWIS', 'LIGHT', 'LIKED', 'LIKES', 'LIMIT', 'LINED',
+            'LINES', 'LINKS', 'LIONS', 'LISTS', 'LIVED', 'LIVER', 'LIVES', 'LOADS', 'LOANS', 'LOCAL',
+            'LOCKS', 'LOGIC', 'LOOKS', 'LOOPS', 'LOOSE', 'LORDS', 'LOSES', 'LOVED', 'LOVER', 'LOVES',
+            'LOWER', 'LOYAL', 'LUCKY', 'LUNCH', 'LUNGS', 'LYING', 'MAGIC', 'MAILS', 'MAJOR', 'MAKES',
+            'MALES', 'MALLS', 'MAPLE', 'MARCH', 'MARKS', 'MARRY', 'MATCH', 'MATES', 'MATHS', 'MAYBE',
+            'MAYOR', 'MEALS', 'MEANS', 'MEANT', 'MEATS', 'MEDAL', 'MEDIA', 'MEETS', 'MELON', 'MEMOS',
+            'MERCY', 'METAL', 'METER', 'METRO', 'MICRO', 'MIGHT', 'MILES', 'MINDS', 'MINES', 'MINOR',
+            'MINUS', 'MIXED', 'MODEL', 'MODES', 'MONEY', 'MONKS', 'MONTH', 'MORAL', 'MOTOR', 'MOTTO',
+            'MOULD', 'MOUNT', 'MOUSE', 'MOUTH', 'MOVED', 'MOVES', 'MOVIE', 'MUSIC', 'MYTHS', 'NAILS',
+            'NAMED', 'NAMES', 'NASTY', 'NEEDS', 'NERVE', 'NEVER', 'NEWLY', 'NIGHT', 'NINTH', 'NOBLE',
+            'NODES', 'NOISE', 'NORTH', 'NOSES', 'NOTED', 'NOTES', 'NOVEL', 'NURSE', 'OCCUR', 'OCEAN',
+            'OFFER', 'OFTEN', 'OLDER', 'OLIVE', 'OPENS', 'OPERA', 'ORDER', 'ORGAN', 'OTHER', 'OUGHT',
+            'OUTER', 'OWNED', 'OWNER', 'PAGES', 'PAINS', 'PAINT', 'PAIRS', 'PALMS', 'PANEL', 'PANIC',
+            'PAPER', 'PARKS', 'PARTS', 'PARTY', 'PASTA', 'PASTE', 'PATCH', 'PATHS', 'PAUSE', 'PEACE',
+            'PEAKS', 'PEARL', 'PEERS', 'PENNY', 'PHASE', 'PHONE', 'PHOTO', 'PIANO', 'PICKS', 'PIECE',
+            'PILES', 'PILLS', 'PILOT', 'PIPES', 'PITCH', 'PIZZA', 'PLACE', 'PLAIN', 'PLANE', 'PLANS',
+            'PLANT', 'PLATE', 'PLAYS', 'PLAZA', 'PLOTS', 'POEMS', 'POETS', 'POINT', 'POLES', 'POLLS',
+            'POOLS', 'PORCH', 'PORTS', 'POSED', 'POSTS', 'POUND', 'POWER', 'PRESS', 'PRICE', 'PRIDE',
+            'PRIME', 'PRINT', 'PRIOR', 'PRIZE', 'PROOF', 'PROUD', 'PROVE', 'PULLS', 'PULSE', 'PUMPS',
+            'PUNCH', 'PUPIL', 'PURSE', 'QUEEN', 'QUERY', 'QUEST', 'QUEUE', 'QUICK', 'QUIET', 'QUITE',
+            'QUOTE', 'RACES', 'RADIO', 'RAILS', 'RAINS', 'RAISE', 'RANKS', 'RAPID', 'RATES', 'RATIO',
+            'REACH', 'READS', 'READY', 'REALM', 'REBEL', 'REFER', 'RELAX', 'RELAY', 'REPLY', 'RESET',
+            'RIGHT', 'RIGID', 'RINGS', 'RISES', 'RISKS', 'RIVAL', 'RIVER', 'ROADS', 'ROAST', 'ROBES',
+            'ROBOT', 'ROCKS', 'ROLES', 'ROLLS', 'ROMAN', 'ROOMS', 'ROOTS', 'ROPES', 'ROSES', 'ROUGH',
+            'ROUND', 'ROUTE', 'ROYAL', 'RULED', 'RULES', 'RURAL', 'SAFER', 'SAINT', 'SALES', 'SALTS',
+            'SANDY', 'SAUCE', 'SAVED', 'SAVES', 'SCALE', 'SCENE', 'SCOPE', 'SCORE', 'SCOTS',
+            'SCRUB', 'SEALS', 'SEATS', 'SEEDS', 'SEEKS', 'SEEMS', 'SELLS', 'SENSE', 'SERVE', 'SETUP',
+            'SEVEN', 'SHADE', 'SHAKE', 'SHALL', 'SHAME', 'SHAPE', 'SHARE', 'SHARK', 'SHARP', 'SHEEP',
+            'SHEET', 'SHELF', 'SHELL', 'SHIFT', 'SHINE', 'SHIPS', 'SHIRT', 'SHOCK', 'SHOES', 'SHOOT',
+            'SHOPS', 'SHORT', 'SHOTS', 'SHOWN', 'SHOWS', 'SIDES', 'SIGHT', 'SIGNS', 'SILLY',
+            'SINCE', 'SINGS', 'SITES', 'SIXTH', 'SIXTY', 'SIZED', 'SIZES', 'SKILL', 'SKINS', 'SKULL',
+            'SLEEP', 'SLICE', 'SLIDE', 'SLOPE', 'SLOTS', 'SMALL', 'SMART', 'SMELL', 'SMILE',
+            'SMOKE', 'SNAKE', 'SOAPY', 'SOCKS', 'SOFAS', 'SOLID', 'SOLVE', 'SONGS', 'SONIC',
+            'SORRY', 'SORTS', 'SOULS', 'SOUND', 'SOUTH', 'SPACE', 'SPARE', 'SPARK', 'SPEAK', 'SPEED',
+            'SPELL', 'SPEND', 'SPENT', 'SPINE', 'SPLIT', 'SPOKE', 'SPOON', 'SPORT', 'SPOTS', 'SPRAY',
+            'SQUAD', 'STAFF', 'STAGE', 'STAIN', 'STAKE', 'STAMP', 'STAND', 'STARE', 'STARS', 'START',
+            'STATE', 'STAYS', 'STEAL', 'STEAM', 'STEEL', 'STEEP', 'STEPS', 'STICK', 'STILL', 'STING',
+            'STOCK', 'STONE', 'STOOD', 'STOOL', 'STOPS', 'STORE', 'STORM', 'STORY', 'STRIP', 'STUCK',
+            'STUDY', 'STUFF', 'STYLE', 'SUGAR', 'SUITE', 'SUPER', 'SWEAR', 'SWEET', 'SWIFT', 'SWING',
+            'SWORD', 'TABLE', 'TAKEN', 'TAKES', 'TALES', 'TALKS', 'TANKS', 'TAPES', 'TASKS', 'TASTE',
+            'TAXES', 'TEACH', 'TEAMS', 'TEARS', 'TEETH', 'TELLS', 'TENDS', 'TENTH', 'TERMS', 'TESTS',
+            'TEXTS', 'THANK', 'THEFT', 'THEIR', 'THEME', 'THERE', 'THESE', 'THICK', 'THING', 'THINK',
+            'THIRD', 'THOSE', 'THREE', 'THREW', 'THROW', 'THUMB', 'TIGHT', 'TILES', 'TIMES', 'TIRED',
+            'TITLE', 'TODAY', 'TOKEN', 'TOOLS', 'TOOTH', 'TOPIC', 'TOTAL', 'TOUCH', 'TOUGH', 'TOURS',
+            'TOWER', 'TOWNS', 'TRACK', 'TRADE', 'TRAIL', 'TRAIN', 'TRASH', 'TREAT', 'TREES',
+            'TREND', 'TRIAL', 'TRIBE', 'TRICK', 'TRIED', 'TRIES', 'TRIPS', 'TRUCK', 'TRULY', 'TRUNK',
+            'TRUST', 'TRUTH', 'TUBES', 'TULIP', 'TURNS', 'TWICE', 'TWINS', 'TWIST', 'TYPED', 'TYPES',
+            'ULTRA', 'UNCLE', 'UNDER', 'UNDUE', 'UNION', 'UNITS', 'UNITY', 'UNTIL', 'UPPER', 'UPSET',
+            'URBAN', 'URGED', 'USAGE', 'USERS', 'USING', 'USUAL', 'VALUE', 'VALVE', 'VIDEO', 'VIEWS',
+            'VIRAL', 'VIRUS', 'VISIT', 'VITAL', 'VOCAL', 'VOICE', 'VOTES', 'WAGES', 'WAIST', 'WAITS',
+            'WALKS', 'WALLS', 'WANTS', 'WARMS', 'WARNS', 'WASTE', 'WATCH', 'WATER', 'WAVES', 'WEARY',
+            'WEEKS', 'WEIRD', 'WELLS', 'WHEAT', 'WHEEL', 'WHERE', 'WHICH', 'WHILE', 'WHITE', 'WHOLE',
+            'WHOSE', 'WIDOW', 'WIDTH', 'WINDS', 'WINES', 'WINGS', 'WIPES', 'WIRED', 'WIRES', 'WITCH',
+            'WIVES', 'WOMAN', 'WOMEN', 'WOODS', 'WORDS', 'WORKS', 'WORLD', 'WORRY', 'WORSE', 'WORST',
+            'WORTH', 'WOULD', 'WRIST', 'WRITE', 'WRONG', 'WROTE', 'YARDS', 'YEARS', 'YIELD', 'YOUNG',
+            'YOURS', 'YOUTH', 'ZONES'
         ];
 
         const KEYBOARD_LAYOUT = [
@@ -391,7 +662,6 @@
 
         function initGame() {
             currentWord = WORDS[Math.floor(Math.random() * WORDS.length)];
-            alert(currentWord);
             currentAttempt = 0;
             currentGuess = '';
             gameEnded = false;
