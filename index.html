@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wordle Game</title>
     <style>
-
         * {
             margin: 0;
             padding: 0;
@@ -20,21 +19,24 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* Add safe area padding for notched devices */
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-            max-width: 100vw;
-            margin: 0 auto; /* Center the content */
-            transform-origin: top center;
         }
 
+        .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        padding: 2vw;
+        box-sizing: border-box;
+        }
+        
         .header {
             text-align: center;
             margin: 20px 0;
             border-bottom: 1px solid #3a3a3c;
             width: 100%;
             padding-bottom: 20px;
-            max-width: 320px;
-            margin: 0 auto;
         }
 
         .game-info {
@@ -51,8 +53,6 @@
             gap: 5px;
             margin-bottom: 30px;
             padding: 20px;
-            max-width: 320px;
-            margin: 0 auto;
         }
 
         .word-row {
@@ -74,13 +74,6 @@
             font-weight: bold;
             text-transform: uppercase;
             transition: all 0.3s ease;
-            /* Add focus styles for accessibility */
-            outline: none;
-        }
-
-        .letter-box:focus {
-            border-color: #ffffff;
-            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
         }
 
         .letter-box.filled {
@@ -120,10 +113,6 @@
             flex-direction: column;
             gap: 8px;
             margin-bottom: 20px;
-            /* Add padding for better touch targets */
-            padding: 0 10px;
-            max-width: 320px;
-            margin: 0 auto;
         }
 
         .keyboard-row {
@@ -147,26 +136,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* Critical mobile improvements */
-            touch-action: manipulation;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            outline: none;
         }
 
         .key:hover {
             background: #565758;
-        }
-
-        /* Add active state for better mobile feedback */
-        .key:active {
-            background: #4a4a4c;
-            transform: scale(0.95);
-        }
-
-        /* Add focus state for keyboard navigation */
-        .key:focus {
-            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
         }
 
         .key.wide {
@@ -204,9 +177,6 @@
             z-index: 1000;
             opacity: 0;
             transition: opacity 0.15s ease;
-            /* Ensure message is readable on mobile */
-            max-width: 90vw;
-            text-align: center;
         }
 
         .message.show {
@@ -226,23 +196,29 @@
             cursor: pointer;
             transition: all 0.1s ease;
             margin-top: 20px;
-            /* Mobile improvements */
-            touch-action: manipulation;
-            min-height: 44px;
-            outline: none;
         }
 
         .new-game-btn:hover {
             background: #565758;
         }
 
-        .new-game-btn:active {
-            background: #4a4a4c;
-            transform: scale(0.98);
-        }
-
-        .new-game-btn:focus {
-            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+        @media (max-width: 600px) {
+            .letter-box {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            .key {
+                padding: 10px 8px;
+                font-size: 0.8rem;
+                min-width: 35px;
+                height: 48px;
+            }
+            
+            .key.wide {
+                min-width: 55px;
+            }
         }
 
         .confirmation-modal {
@@ -259,9 +235,6 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
-            padding: 20px;
-            /* Ensure modal works on mobile */
-            padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
         }
 
         .confirmation-modal.show {
@@ -273,13 +246,9 @@
             background: #ffffff;
             border-radius: 8px;
             padding: 30px;
-            width: 100%;
             max-width: 400px;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            /* Ensure it doesn't overflow on small screens */
-            max-height: 80vh;
-            overflow-y: auto;
         }
 
         .confirmation-box h3 {
@@ -292,29 +261,23 @@
             margin-bottom: 25px;
             color: #565758;
             line-height: 1.4;
-            font-size: 1rem;
         }
 
         .confirmation-buttons {
             display: flex;
             gap: 15px;
             justify-content: center;
-            flex-wrap: wrap;
         }
 
         .confirm-btn, .cancel-btn {
-            padding: 14px 24px;
+            padding: 10px 20px;
             border: none;
             border-radius: 4px;
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.2s ease;
-            min-width: 100px;
-            /* Critical for mobile */
-            touch-action: manipulation;
-            min-height: 44px;
-            outline: none;
+            min-width: 80px;
         }
 
         .confirm-btn {
@@ -326,15 +289,6 @@
             background: #5a9a54;
         }
 
-        .confirm-btn:active {
-            background: #4a9a44;
-            transform: scale(0.98);
-        }
-
-        .confirm-btn:focus {
-            box-shadow: 0 0 0 2px rgba(106, 170, 100, 0.5);
-        }
-
         .cancel-btn {
             background: #d3d6da;
             color: #1a1a1b;
@@ -343,166 +297,27 @@
         .cancel-btn:hover {
             background: #bbbec2;
         }
-
-        .cancel-btn:active {
-            background: #a8abc2;
-            transform: scale(0.98);
-        }
-
-        .cancel-btn:focus {
-            box-shadow: 0 0 0 2px rgba(211, 214, 218, 0.7);
-        }
-
-        /* Mobile responsive breakpoints */
-        @media (max-width: 600px) {
-            .letter-box {
-                width: 50px;
-                height: 50px;
-                font-size: 1.5rem;
-            }
-            
-            .key {
-                padding: 12px 10px;
-                font-size: 0.8rem;
-                min-width: 38px;
-                height: 50px;
-                /* Ensure minimum touch target size */
-                min-height: 44px;
-            }
-            
-            .key.wide {
-                min-width: 60px;
-                padding: 12px 16px;
-            }
-            
-            .game-info {
-                font-size: 1rem;
-                gap: 15px;
-            }
-            
-            .header {
-                margin: 15px 0;
-            }
-            
-            .game-board {
-                padding: 15px;
-                margin-bottom: 20px;
-            }
-            
-            .keyboard {
-                gap: 6px;
-                padding: 0 15px;
-            }
-            
-            .keyboard-row {
-                gap: 4px;
-            }
-        }
-
-        /* Very small screens */
-        @media (max-width: 360px) {
-            .letter-box {
-                width: 45px;
-                height: 45px;
-                font-size: 1.3rem;
-            }
-            
-            .key {
-                min-width: 32px;
-                height: 48px;
-                padding: 10px 8px;
-                font-size: 0.75rem;
-            }
-            
-            .key.wide {
-                min-width: 52px;
-                padding: 10px 12px;
-            }
-            
-            .game-board {
-                padding: 10px;
-            }
-            
-            .keyboard {
-                padding: 0 10px;
-            }
-            
-            .keyboard-row {
-                gap: 3px;
-            }
-            
-            .confirmation-box {
-                padding: 20px;
-                margin: 10px;
-            }
-        }
-
-        /* Landscape orientation adjustments */
-        @media (orientation: landscape) and (max-height: 500px) {
-            .header {
-                margin: 10px 0;
-            }
-            
-            .game-board {
-                margin-bottom: 15px;
-                padding: 10px;
-            }
-            
-            .keyboard {
-                margin-bottom: 10px;
-            }
-            
-            .letter-box {
-                width: 45px;
-                height: 45px;
-                font-size: 1.4rem;
-            }
-            
-            .key {
-                height: 45px;
-                min-height: 40px;
-                padding: 10px 8px;
-            }
-            
-            .new-game-btn {
-                margin-top: 10px;
-                padding: 10px 20px;
-            }
-        }
-
-        @media (min-width: 376px) {
-            body {
-                transform: scale(calc(100vw / 375));
-                transform-origin: top center;
-            }
-        }
-
-        @media (min-width: 768px) {
-            body {
-                transform: scale(2.05); /* Max scale for tablets/desktop */
-                max-width: 375px;
-            }
-        }
-
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="game-info">
-            <div>Attempt: <span id="current-attempt">1</span>/6</div>
-            <div>Wins: <span id="wins">0</span></div>
+    <div class="container">
+        <div class="header">
+            <div class="game-info">
+                <div>Attempt: <span id="current-attempt">1</span>/6</div>
+                <div>Wins: <span id="wins">0</span></div>
+            </div>
         </div>
-    </div>
 
-    <div class="game-board" id="game-board">
-        <!-- Game board will be generated by JavaScript -->
-    </div>
+        <div class="game-board" id="game-board">
+            <!-- Game board will be generated by JavaScript -->
+        </div>
 
-    <div class="keyboard" id="keyboard">
-        <!-- Keyboard will be generated by JavaScript -->
-    </div>
+        <div class="keyboard" id="keyboard">
+            <!-- Keyboard will be generated by JavaScript -->
+        </div>
 
-    <button class="new-game-btn" onclick="handleNewGameClick()">New Game</button>
+        <button class="new-game-btn" onclick="handleNewGameClick()">New Game</button>
+    </div>
 
     <div class="confirmation-modal" id="confirmation-modal">
         <div class="confirmation-box">
@@ -514,8 +329,9 @@
             </div>
         </div>
     </div>
-
+        
     <div class="message" id="message"></div>
+</body>
 
     <script>
         const WORDS = [
@@ -943,5 +759,4 @@
         // Initialize the game
         initGame();
     </script>
-</body>
 </html>
