@@ -22,15 +22,15 @@
         }
 
         .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        padding: 2vw;
-        box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 2vw;
+            box-sizing: border-box;
         }
-        
+
         .header {
             text-align: center;
             margin: 20px 0;
@@ -131,7 +131,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.1s ease;
-            min-width: 43px;
+            min-width: 33px;
             height: 58px;
             display: flex;
             align-items: center;
@@ -490,7 +490,7 @@
         const KEYBOARD_LAYOUT = [
             ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
             ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-            ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACKSPACE']
+            ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '🡄']
         ];
 
         let currentWord = '';
@@ -548,7 +548,7 @@
                     keyElement.textContent = key;
                     keyElement.id = `key-${key}`;
                     
-                    if (key === 'ENTER' || key === 'BACKSPACE') {
+                    if (key === 'ENTER' || key === '🡄') {
                         keyElement.classList.add('wide');
                     }
                     
@@ -565,7 +565,7 @@
             
             if (key === 'ENTER') {
                 submitGuess();
-            } else if (key === 'BACKSPACE') {
+            } else if (key === '🡄') {
                 deleteLetter();
             } else if (currentGuess.length < 5) {
                 addLetter(key);
@@ -742,8 +742,8 @@
             
             if (key === 'ENTER') {
                 handleKeyPress('ENTER');
-            } else if (key === 'BACKSPACE') {
-                handleKeyPress('BACKSPACE');
+            } else if (key === '🡄') {
+                handleKeyPress('🡄');
             } else if (key.match(/[A-Z]/) && key.length === 1) {
                 handleKeyPress(key);
             }
