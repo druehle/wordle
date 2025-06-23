@@ -312,7 +312,7 @@
         <div class="header">
             <div class="game-info">
                 <div>Attempt: <span id="current-attempt">1</span>/6</div>
-                <div>Wins: <span id="wins">0</span></div>
+                <div>Wins: <span id="wins">0</span>/<span id="totalGamesPlayed">0</span></div>
                 <button class="new-game-btn" onclick="handleNewGameClick()">New Game</button>
             </div>
         </div>
@@ -672,6 +672,7 @@
         let currentGuess = '';
         let gameEnded = false;
         let wins = parseInt(localStorage.getItem('wordleWins') || '0');
+        let totalGamesPlayed = parseInt(localStorage.getItem('wordleTotalGamesPlayed') || '0');
 
         function initGame() {
             currentWord = WORDS[Math.floor(Math.random() * WORDS.length)];
@@ -680,6 +681,7 @@
             gameEnded = false;
             
             document.getElementById('wins').textContent = wins;
+            document.getElementById('totalGamesPlayed').textContent = totalGamesPlayed;
             document.getElementById('current-attempt').textContent = '1';
             
             createGameBoard();
@@ -790,7 +792,7 @@
             currentAttempt++;
             currentGuess = '';
             
-            if (currentAttempt <= 6) {
+            if (currentAttempt < 6) {
                 document.getElementById('current-attempt').textContent = currentAttempt + 1;
             }
         }
@@ -832,7 +834,7 @@
                 setTimeout(() => {
                     cells[i].classList.add(results[i]);
                     updateKeyboardKey(originalGuess[i], results[i]);
-                }, i * 100);
+                }, i * 350);
             }
             
             // Check win/lose conditions
@@ -842,9 +844,15 @@
                     wins++;
                     localStorage.setItem('wordleWins', wins.toString());
                     document.getElementById('wins').textContent = wins;
+                    totalGamesPlayed++;
+                    localStorage.setItem('wordleTotalGamesPlayed', totalGamesPlayed.toString());
+                    document.getElementById('totalGamesPlayed').textContent = totalGamesPlayed;
                     showMessage('Congratulations! You won! 🎉');
                 } else if (currentAttempt === 6) {
                     gameEnded = true;
+                    totalGamesPlayed++;
+                    localStorage.setItem('wordleTotalGamesPlayed', totalGamesPlayed.toString());
+                    document.getElementById('totalGamesPlayed').textContent = totalGamesPlayed;
                     showMessage(`Game Over! The word was: ${target}`);
                 }
             }, 500);
