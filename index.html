@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
-    <title>Wrodle Game</title>
+    <title>Wordle Game</title>
     <style>
 
         * {
@@ -675,7 +675,7 @@
             'WISPS', 'WITTY', 'WOODY', 'WOOED', 'WOOER', 'WORDY', 'WORMS', 'WOUND', 'WRACK', 'WRAPS', 
             'WRAPT', 'WRATH', 'WREAK', 'WRECK', 'WREST', 'WRING', 'WRITS', 'WROTH', 'YACHT', 'YARNS', 
             'YAWNS', 'YEARN', 'YEAST', 'YELLS', 'YELPS', 'YOKED', 'YOKES', 'YOLKS', 'ZEBRA', 'CHORE',
-            'CHIVE', 'DINGS'
+            'CHIVE', 'DINGS', 'PLEAT', 'ZESTY'
         ];
 
         const KEYBOARD_LAYOUT = [
@@ -872,7 +872,7 @@
                     document.getElementById('totalGamesPlayed').textContent = totalGamesPlayed;
                     showMessage(`Game Over! The word was: ${target}`);
                 }
-            }, 500);
+            }, 2100);
         }
 
         function updateKeyboardKey(letter, result) {
@@ -932,7 +932,11 @@
 
         function confirmNewGame() {
             closeConfirmation();
-            newGame();
+            showMessage(`The word was: ${currentWord}`);
+            setTimeout(() => {
+                newGame();
+            }, 2000);
+
         }
 
         // Keyboard event listener
@@ -961,6 +965,12 @@
                 e.preventDefault();
             }
         }, { passive: false });
+
+        window.addEventListener('beforeunload', function (e) {
+            e.preventDefault();
+            e.returnValue = 'Are you sure you want to leave?'; // Required for Chrome to show prompt
+            return 'Are you sure you want to leave?';
+        });
 
         // Initialize the game
         initGame();
