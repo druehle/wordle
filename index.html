@@ -99,7 +99,7 @@
             background: #538d4e;
             border-color: #538d4e;
             color: white;
-            animation: flip 0.6s ease-in-out;
+            animation: bounce 1s ease-in-out;
         }
 
         .letter-box.present {
@@ -120,6 +120,23 @@
             0% { transform: rotateY(0); }
             50% { transform: rotateY(-90deg); }
             100% { transform: rotateY(0); }
+        }
+
+        @keyframes jiggle {
+            0% { transform: rotateY(0) translateX(0); }
+            25% { transform: rotateY(-90deg) translateX(0); }
+            50% { transform: rotateY(0) translateX(0); }
+            62.5% { transform: rotateY(0) translateX(-10px); }
+            87.5% { transform: rotateY(0) translateX(10px); }
+            100% { transform: rotateY(0) translateX(0); }
+        }
+
+        @keyframes bounce {
+            0% { transform: rotateY(0) translateY(0); }
+            25% { transform: rotateY(-90deg) translateY(0); }
+            50% { transform: rotateY(0) translateY(0); }
+            75% { transform: rotateY(0) translateY(-15px); }
+            100% { transform: rotateY(0) translateY(0); }
         }
 
         .keyboard {
@@ -853,7 +870,8 @@
                     updateKeyboardKey(originalGuess[i], results[i]);
                 }, i * 400);
             }
-            
+
+           
             // Check win/lose conditions
             setTimeout(() => {
                 if (guess === target) {
